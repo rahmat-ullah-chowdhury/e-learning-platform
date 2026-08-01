@@ -54,3 +54,16 @@ video {
   height: auto;
   display: block;
 }
+
+/* ─── Animations ─────────────────────────────────────────── */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ─── Input focus style ──────────────────────────────────── */
+input:focus-visible {
+  outline: none;
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+

@@ -5,7 +5,7 @@
 ---
 
 ## Current Phase
-Phase 4 — Auth UI (Frontend Only)
+Phase 5 — Student Dashboard (Frontend Only)
 
 ## Completed
 - Phase 0 — Environment & Scaffold: Next.js 14 project scaffolded (TypeScript, Tailwind, App Router, ESLint)
@@ -46,9 +46,19 @@ Phase 4 — Auth UI (Frontend Only)
   - `app/(public)/courses/page.tsx` — Course listing with category filter pills, 8-course grid, empty states. searchParams awaited per Next.js 16.
   - `app/(public)/courses/[slug]/page.tsx` — Course detail: dark hero, enrol card (free/paid CTA), What you'll learn, curriculum with preview/locked lesson rows. params awaited per Next.js 16. notFound() on bad slug.
   - Zero TS errors. All 3 pages browser-verified: no console errors.
+- **Phase 4 — Auth UI (Frontend Only)** ✅
+  - `lib/api.ts` — Added login(), signup(), forgotPassword(), resetPassword() mock functions + AuthResult/ForgotPasswordResult/ResetPasswordResult types. Per Rules.md: generic auth error messages only.
+  - `components/FormField.tsx` — Reusable label+input+error unit. aria-invalid, aria-describedby, disabled state. Error text directly under field in --color-error per Design.md.
+  - `components/LoginForm.tsx` — Email + password, Zod validation, loading spinner, generic global error for auth failures.
+  - `components/SignupForm.tsx` — Name + email + password (strength rules) + confirmPassword (cross-field match), Zod, loading state.
+  - `components/ForgotPasswordForm.tsx` — Email only; on success shows "Check your email" confirmation (always, prevents user enumeration). 
+  - `components/ResetPasswordForm.tsx` — Password + confirm; expired token shows inline error with link to /forgot-password; on success auto-redirects to /login.
+  - `app/(public)/login/page.tsx`, `signup/page.tsx`, `forgot-password/page.tsx`, `reset-password/[token]/page.tsx` — Server component shells with metadata wrapping client forms.
+  - `app/globals.css` — Added @keyframes spin + input:focus-visible ring.
+  - All 4 pages browser-verified: zero console errors, all field validations confirmed working.
 
 ## In Progress
-- Nothing — Phase 3 complete; Phase 4 ready to start
+- Nothing — Phase 4 complete; Phase 5 ready to start
 
 ## Decisions Made That Aren't in the Other Docs Yet
 - Confirmed the "Blocked/Waiting On" client questions below do NOT block Phases 1–8 (all frontend UI work) — they only become relevant at their specific later phase (languages → messages/ later, scale → Phase 9 infra, timeline/budget → project mgmt only, integrations → whenever specific integration is built, admin permission granularity → Phase 13). Safe to proceed through all frontend phases without these answers.
@@ -71,14 +81,13 @@ Phase 4 — Auth UI (Frontend Only)
 - Client answers still pending (not currently blocking any active phase): number of languages needed, exact scale/growth targets, timeline and budget, existing system integrations, admin role permission granularity (see PRD.md / original metadata doc)
 
 ## Next Steps
-- Start Phase 4 — Auth UI (Frontend Only):
-  1. Build `app/(public)/login/page.tsx` — email + password form, Zod validation, error state, link to signup/forgot.
-  2. Build `app/(public)/signup/page.tsx` — name + email + password form, Zod validation, error state.
-  3. Build `app/(public)/forgot-password/page.tsx` — email form, sends to mock function, shows sent confirmation.
-  4. Build `app/(public)/reset-password/[token]/page.tsx` — new password + confirm form, Zod validation.
-  5. Add mock auth functions to `lib/api.ts`: `login()`, `signup()`, `forgotPassword()`, `resetPassword()`.
-  6. All forms must have: loading state during submission, field-level error messages (under each field, in --color-error), generic top-level error for auth failures.
-  7. Done when: all four forms validate correctly and show appropriate error states (no real backend needed).
+- Start Phase 5 — Student Dashboard (Frontend Only):
+  1. Create `app/(student)/` route group with its own layout (no public Navbar/Footer — separate dashboard shell with sidebar).
+  2. Build sidebar nav component: links to Dashboard, My Courses, Certificates, Payments, Settings.
+  3. Build `app/(student)/dashboard/page.tsx` — enrolled courses grid (using mock enrollments), progress bars.
+  4. Build `app/(student)/dashboard/settings/page.tsx` — name/email edit form (Zod), password change section.
+  5. Add mock enrollment data + getEnrollments() to lib/api.ts.
+  6. Done when: student can see their enrolled courses with progress, navigate sidebar, and view settings.
 
 ---
 
@@ -92,6 +101,13 @@ Phase 4 — Auth UI (Frontend Only)
 **Decisions made:** 
 **Next step:** 
 ```
+
+## Session — Aug 1, 2026 (Phase 4)
+**Phase:** Phase 4 complete, Phase 5 ready
+**Completed this session:** 4 mock auth functions in lib/api.ts (login, signup, forgotPassword, resetPassword); FormField reusable component; LoginForm, SignupForm, ForgotPasswordForm, ResetPasswordForm client components; 4 page shells (login, signup, forgot-password, reset-password/[token]); @keyframes spin + input focus style in globals.css. All 4 pages browser-verified with zero console errors and all field validations confirmed working.
+**Files touched:** lib/api.ts, components/FormField.tsx, components/LoginForm.tsx, components/SignupForm.tsx, components/ForgotPasswordForm.tsx, components/ResetPasswordForm.tsx, app/(public)/login/page.tsx, app/(public)/signup/page.tsx, app/(public)/forgot-password/page.tsx, app/(public)/reset-password/[token]/page.tsx, app/globals.css
+**Decisions made:** Server component page shells wrap 'use client' form components — keeps metadata (title/description) available while forms are interactive. forgotPassword always returns ok:true to prevent user enumeration. Generic auth error messages only per Rules.md.
+**Next step:** Begin Phase 5 — Student Dashboard (sidebar layout, enrolled courses, settings).
 
 ## Session — Aug 1, 2026 (Phase 3)
 **Phase:** Phase 3 complete, Phase 4 ready

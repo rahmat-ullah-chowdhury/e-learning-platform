@@ -318,3 +318,90 @@ export async function getCategories(): Promise<string[]> {
   const cats = new Set(MOCK_COURSES.filter((c) => c.status === 'published').map((c) => c.category));
   return Array.from(cats).sort();
 }
+
+// ─── Auth API functions (mock) ─────────────────────────────────────────────────
+//
+// These functions simulate backend auth responses during Phases 4–8.
+// Phase 9: replace each body with a real fetch() call to the backend.
+// The function signatures (name, params, return type) must NOT change.
+//
+// Per Rules.md: user-facing auth errors are always generic — never reveal
+// which specific field failed (e.g. don't say "email not found" or "wrong password").
+
+export type AuthResult =
+  | { ok: true; redirectTo: string }
+  | { ok: false; error: string };
+
+/**
+ * Log in with email + password.
+ * Phase 9: POST /api/auth/login
+ */
+export async function login(data: {
+  email: string;
+  password: string;
+}): Promise<AuthResult> {
+  await delay(600);
+  // Mock: any well-formed credentials succeed; simulate failure for demo account
+  if (data.email === 'fail@example.com') {
+    return { ok: false, error: 'Invalid credentials. Please try again.' };
+  }
+  return { ok: true, redirectTo: '/dashboard' };
+}
+
+/**
+ * Register a new account.
+ * Phase 9: POST /api/auth/signup
+ */
+export async function signup(data: {
+  name: string;
+  email: string;
+  password: string;
+}): Promise<AuthResult> {
+  await delay(800);
+  // Mock: simulate "email already in use" for demo address
+  if (data.email === 'taken@example.com') {
+    return { ok: false, error: 'An account with this email already exists.' };
+  }
+  return { ok: true, redirectTo: '/dashboard' };
+}
+
+export type ForgotPasswordResult =
+  | { ok: true }
+  | { ok: false; error: string };
+
+/**
+ * Request a password reset link.
+ * Phase 9: POST /api/auth/forgot-password
+ *
+ * Note: always returns ok:true regardless of whether the email exists —
+ * this prevents user-enumeration attacks (confirms nothing about the email).
+ */
+export async function forgotPassword(data: {
+  email: string;
+}): Promise<ForgotPasswordResult> {
+  await delay(700);
+  // Always succeeds client-side — real endpoint does the same (user-enumeration prevention)
+  void data.email;
+  return { ok: true };
+}
+
+export type ResetPasswordResult =
+  | { ok: true }
+  | { ok: false; error: string };
+
+/**
+ * Submit a new password using the reset token from the URL.
+ * Phase 9: POST /api/auth/reset-password
+ */
+export async function resetPassword(data: {
+  token: string;
+  password: string;
+}): Promise<ResetPasswordResult> {
+  await delay(700);
+  // Mock: simulate an expired/invalid token
+  if (data.token === 'expired') {
+    return { ok: false, error: 'This link has expired. Please request a new one.' };
+  }
+  return { ok: true };
+}
+
