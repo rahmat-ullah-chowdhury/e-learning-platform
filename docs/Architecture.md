@@ -3,8 +3,8 @@
 ## 1. Tech Stack
 
 ### Frontend (build now)
-- Next.js 14 (App Router)
-- Tailwind CSS
+- Next.js 16 (App Router) — note: originally scoped as v14; the actual installed version is 16. Key differences to follow: `params`/`searchParams` in page/layout components are Promises and must be `await`ed; `PageProps`/`LayoutProps` are globally available typed helpers, no import needed
+- Tailwind CSS v4 (not v3) — uses `@import 'tailwindcss'` in CSS, not `@tailwind base/components/utilities` directives; design tokens can use the `@theme` block in CSS; no `tailwind.config.js` needed for basic usage
 - TypeScript (strict mode)
 - TanStack Query (React Query) for data fetching
 - next-intl for i18n
@@ -103,7 +103,13 @@ Browser → API route → authMiddleware (verifies JWT from httpOnly cookie)
 
 Every admin/instructor/student action follows this exact chain — no route skips the middleware, no component queries the database directly (only the backend does, via Prisma).
 
-## 5. Environment Variables (structure, values added during setup)
+## 5. Data Conventions (established during Phase 1)
+
+- **Currency**: all prices stored as integer pence/cents (e.g. `1999` = £19.99), never floats — avoids floating-point rounding issues. Display layer handles formatting (`£` + `(pricePence / 100).toFixed(2)`).
+- **Quiz answer safety**: the full `Quiz`/`Question` type (including `correctOptionIndex`) is server-only and must never be sent to the client. A separate client-safe type (`QuizForStudent`) strips correct-answer fields — this is the type to use for any API response or component that renders a quiz to a student before grading.
+- **i18n rollout**: `next-intl` is installed from Phase 1 but not wired up (no middleware/routing config yet). Phases 2–8 (UI-only work) use plain English strings directly in components. Full i18n wiring happens in a dedicated later pass — do not partially wire it mid-phase.
+
+## 6. Environment Variables (structure, values added during setup)
 
 ```
 DATABASE_URL=
