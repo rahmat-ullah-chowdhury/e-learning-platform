@@ -1,0 +1,155 @@
+{
+  "nav": {
+    "home": "Home",
+    "courses": "Courses",
+    "login": "Log in",
+    "signup": "Sign up",
+    "dashboard": "Dashboard",
+    "instructor": "Instructor",
+    "admin": "Admin",
+    "logout": "Log out"
+  },
+  "home": {
+    "hero": {
+      "headline": "Learn skills that matter",
+      "subheadline": "Free and paid courses from expert instructors. Start learning today.",
+      "cta_browse": "Browse courses",
+      "cta_signup": "Sign up free"
+    },
+    "featured_courses": "Featured Courses",
+    "all_courses": "All Courses",
+    "categories": "Categories"
+  },
+  "course": {
+    "free": "Free",
+    "paid": "Paid",
+    "enrolled": "Enrolled",
+    "enroll": "Enrol now",
+    "buy": "Buy course",
+    "lessons": "{count, plural, one {# lesson} other {# lessons}}",
+    "students": "{count, plural, one {# student} other {# students}}",
+    "rating": "Rating",
+    "no_rating": "No ratings yet",
+    "by": "By {name}",
+    "preview": "Preview",
+    "continue": "Continue learning",
+    "completed": "Completed",
+    "progress": "{percent}% complete",
+    "description": "Course description",
+    "what_you_learn": "What you'll learn",
+    "requirements": "Requirements",
+    "instructor_bio": "About the instructor"
+  },
+  "auth": {
+    "login": {
+      "title": "Log in to your account",
+      "email_label": "Email address",
+      "password_label": "Password",
+      "submit": "Log in",
+      "forgot_password": "Forgot your password?",
+      "no_account": "Don't have an account?",
+      "signup_link": "Sign up"
+    },
+    "signup": {
+      "title": "Create your account",
+      "name_label": "Full name",
+      "email_label": "Email address",
+      "password_label": "Password",
+      "submit": "Create account",
+      "have_account": "Already have an account?",
+      "login_link": "Log in"
+    },
+    "forgot_password": {
+      "title": "Reset your password",
+      "email_label": "Email address",
+      "submit": "Send reset link",
+      "back_to_login": "Back to log in",
+      "sent": "If an account exists for that email, a reset link has been sent."
+    },
+    "reset_password": {
+      "title": "Choose a new password",
+      "password_label": "New password",
+      "confirm_label": "Confirm password",
+      "submit": "Reset password"
+    },
+    "errors": {
+      "invalid_credentials": "Invalid credentials",
+      "something_wrong": "Something went wrong. Please try again.",
+      "email_in_use": "An account with this email already exists.",
+      "link_expired": "This link has expired. Please request a new one."
+    }
+  },
+  "dashboard": {
+    "title": "My Dashboard",
+    "enrolled_courses": "My courses",
+    "progress": "Progress",
+    "certificates": "Certificates",
+    "payments": "Payment history",
+    "settings": "Account settings",
+    "no_courses": "You haven't enrolled in any courses yet.",
+    "browse_cta": "Browse courses"
+  },
+  "exam": {
+    "start": {
+      "title": "Before you begin",
+      "duration": "Duration: {minutes} minutes",
+      "window_closes": "This exam closes at {time}",
+      "cta": "Start exam"
+    },
+    "attempt": {
+      "time_remaining": "Time remaining",
+      "question": "Question {current} of {total}",
+      "submit": "Submit exam",
+      "confirm_submit": "Are you sure you want to submit? You cannot change your answers after submission."
+    },
+    "result": {
+      "passed": "Congratulations — you passed!",
+      "failed": "You did not pass this time.",
+      "score": "Your score: {score}/{max}",
+      "certificate": "Download certificate",
+      "retake": "Retake exam"
+    }
+  },
+  "instructor": {
+    "dashboard": "Instructor dashboard",
+    "my_courses": "My courses",
+    "create_course": "Create course",
+    "edit_course": "Edit course",
+    "my_quizzes": "My quizzes",
+    "students_enrolled": "Students enrolled"
+  },
+  "admin": {
+    "dashboard": "Admin dashboard",
+    "courses": "Courses",
+    "users": "Users",
+    "payments": "Payments",
+    "exams": "Exams",
+    "audit_log": "Audit log",
+    "settings": "Settings",
+    "ban_user": "Ban user",
+    "suspend_user": "Suspend user",
+    "refund_payment": "Refund payment",
+    "confirm_action": "Are you sure? This action cannot be undone."
+  },
+  "common": {
+    "loading": "Loading…",
+    "error": "Something went wrong. Please try again.",
+    "empty": "Nothing here yet.",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "view": "View",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "search": "Search",
+    "filter": "Filter",
+    "sort": "Sort",
+    "price": "{amount}",
+    "free": "Free",
+    "gbp": "£",
+    "per_page": "Per page",
+    "showing": "Showing {from}–{to} of {total}"
+  }
+}
