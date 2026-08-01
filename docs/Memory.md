@@ -5,7 +5,7 @@
 ---
 
 ## Current Phase
-Phase 3 — Public Pages
+Phase 4 — Auth UI (Frontend Only)
 
 ## Completed
 - Phase 0 — Environment & Scaffold: Next.js 14 project scaffolded (TypeScript, Tailwind, App Router, ESLint)
@@ -39,9 +39,16 @@ Phase 3 — Public Pages
   - `app/(public)/courses/page.tsx` — Courses placeholder with mock grid verifying layout.
   - Removed default `app/page.tsx` scaffold.
   - Layout successfully verified visually across pages and mobile viewport.
+- **Phase 3 — Public Pages** ✅
+  - `lib/api.ts` — Mock API layer: getCourses, getCourseBySlug, getLessonsByCourseId, getFeaturedCourses, getCategories, formatPrice, formatDuration. 8 realistic mock courses with category/rating/price data.
+  - `components/CourseCard.tsx` — Free/paid/enrolled/completed variants. Design.md card styling (shadow-card, radius-md, hover lift). FREE badge overlay, star rating, price via formatPrice.
+  - `app/(public)/page.tsx` — Full home page: dark navy hero with gradient, CTA buttons, stat cards, category pills, top-rated course grid, free courses banner.
+  - `app/(public)/courses/page.tsx` — Course listing with category filter pills, 8-course grid, empty states. searchParams awaited per Next.js 16.
+  - `app/(public)/courses/[slug]/page.tsx` — Course detail: dark hero, enrol card (free/paid CTA), What you'll learn, curriculum with preview/locked lesson rows. params awaited per Next.js 16. notFound() on bad slug.
+  - Zero TS errors. All 3 pages browser-verified: no console errors.
 
 ## In Progress
-- Nothing — Phase 2 complete; Phase 3 ready to start
+- Nothing — Phase 3 complete; Phase 4 ready to start
 
 ## Decisions Made That Aren't in the Other Docs Yet
 - Confirmed the "Blocked/Waiting On" client questions below do NOT block Phases 1–8 (all frontend UI work) — they only become relevant at their specific later phase (languages → messages/ later, scale → Phase 9 infra, timeline/budget → project mgmt only, integrations → whenever specific integration is built, admin permission granularity → Phase 13). Safe to proceed through all frontend phases without these answers.
@@ -57,19 +64,21 @@ Phase 3 — Public Pages
 ## Known Issues / Tech Debt
 - 3 high severity npm vulnerabilities present since Phase 0 scaffold — intentionally unaddressed until Phase 14, not forgotten.
 - `next-intl` is installed but not configured (middleware/routing). i18n wiring deferred; components use plain strings for now.
-- `lib/api.ts` is empty — will be populated starting Phase 3.
+- CourseCard thumbnails use coloured placeholder divs with category initials — real thumbnails will come via Cloudflare R2/S3 in Phase 10.
+- Course detail `getWhatYouLearnPoints()` returns generic per-category outcomes — real `whatYouLearn[]` field should be added to the `Course` type and mock data when an instructor course editor is built (Phase 7).
 
 ## Blocked / Waiting On
 - Client answers still pending (not currently blocking any active phase): number of languages needed, exact scale/growth targets, timeline and budget, existing system integrations, admin role permission granularity (see PRD.md / original metadata doc)
 
 ## Next Steps
-- Start Phase 3 — Public Pages:
-  1. Update `lib/api.ts` to include mock data and mock fetch functions for courses (e.g. `getCourses`, `getCourseBySlug`).
-  2. Build `app/(public)/page.tsx` with full hero section and featured courses.
-  3. Build `components/CourseCard.tsx` (handling free/paid variants).
-  4. Update `app/(public)/courses/page.tsx` to list courses using mock data.
-  5. Build `app/(public)/courses/[slug]/page.tsx` for course details.
-  6. Done when: user can browse from home -> listing -> detail using mock data.
+- Start Phase 4 — Auth UI (Frontend Only):
+  1. Build `app/(public)/login/page.tsx` — email + password form, Zod validation, error state, link to signup/forgot.
+  2. Build `app/(public)/signup/page.tsx` — name + email + password form, Zod validation, error state.
+  3. Build `app/(public)/forgot-password/page.tsx` — email form, sends to mock function, shows sent confirmation.
+  4. Build `app/(public)/reset-password/[token]/page.tsx` — new password + confirm form, Zod validation.
+  5. Add mock auth functions to `lib/api.ts`: `login()`, `signup()`, `forgotPassword()`, `resetPassword()`.
+  6. All forms must have: loading state during submission, field-level error messages (under each field, in --color-error), generic top-level error for auth failures.
+  7. Done when: all four forms validate correctly and show appropriate error states (no real backend needed).
 
 ---
 
@@ -83,6 +92,13 @@ Phase 3 — Public Pages
 **Decisions made:** 
 **Next step:** 
 ```
+
+## Session — Aug 1, 2026 (Phase 3)
+**Phase:** Phase 3 complete, Phase 4 ready
+**Completed this session:** lib/api.ts mock layer (8 courses, formatPrice, formatDuration, getCourses/getCourseBySlug/getLessonsByCourseId/getFeaturedCourses/getCategories); CourseCard component (free/paid/enrolled/completed variants); full home page (hero, categories, featured grid, banner); course listing page (category filters, grid, empty states); course detail page (hero, enrol card, curriculum, what you'll learn). Zero TS errors. All 3 pages browser-verified with no console errors.
+**Files touched:** lib/api.ts, components/CourseCard.tsx, app/(public)/page.tsx, app/(public)/courses/page.tsx, app/(public)/courses/[slug]/page.tsx
+**Decisions made:** formatPrice/formatDuration helpers live in lib/api.ts as they're tightly coupled to the data layer. CourseCard thumbnails use coloured placeholders for now. getWhatYouLearnPoints() is a temporary hardcoded helper — will be replaced with real course data field in Phase 7.
+**Next step:** Begin Phase 4 — Auth UI (login, signup, forgot-password, reset-password forms with Zod validation).
 
 ## Session — Aug 1, 2026 (Phase 2)
 **Phase:** Phase 2 complete, Phase 3 ready
