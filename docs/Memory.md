@@ -5,7 +5,7 @@
 ---
 
 ## Current Phase
-Phase 5 — Student Dashboard (Frontend Only)
+Phase 8 — Admin Dashboard (UI Only)
 
 ## Completed
 - Phase 0 — Environment & Scaffold: Next.js 14 project scaffolded (TypeScript, Tailwind, App Router, ESLint)
@@ -56,9 +56,48 @@ Phase 5 — Student Dashboard (Frontend Only)
   - `app/(public)/login/page.tsx`, `signup/page.tsx`, `forgot-password/page.tsx`, `reset-password/[token]/page.tsx` — Server component shells with metadata wrapping client forms.
   - `app/globals.css` — Added @keyframes spin + input:focus-visible ring.
   - All 4 pages browser-verified: zero console errors, all field validations confirmed working.
+- **Phase 5 — Student Dashboard & Course Player (Frontend Only)** ✅
+  - `lib/api.ts` — Added mock data (MOCK_CURRENT_USER, MOCK_ENROLLMENTS, MOCK_LESSON_PROGRESS, MOCK_PAYMENTS) and functions. Added view-model type `EnrolledCourse`.
+  - `components/ProgressBar.tsx` — Reusable progress bar using tokens.
+  - `components/StatusBadge.tsx` — Status indicator reusing --color-warning for pending and refunded.
+  - `components/EnrolledCourseCard.tsx` — Course card with progress and CTA.
+  - `components/DashboardSidebar.tsx` — Sidebar navigation (desktop fixed, mobile bottom tabs).
+  - `app/(student)/layout.tsx` — Student dashboard shell without public Navbar/Footer.
+  - `app/(student)/dashboard/page.tsx` — Overview with stats, continue learning, and enrolled courses.
+  - `app/(student)/dashboard/courses/page.tsx` — My Courses with filter tabs (searchParams awaited).
+  - `app/(student)/dashboard/certificates/page.tsx` — Certificates placeholder (download disabled).
+  - `app/(student)/dashboard/payments/page.tsx` — Payment history table (desktop) and cards (mobile).
+  - `app/(student)/dashboard/settings/page.tsx` — Settings page wrapping `SettingsProfileForm` and `SettingsPasswordForm` (Zod validation).
+  - `components/CourseSidebar.tsx` — Collapsible curriculum sidebar for the player.
+  - `components/LessonPlayer.tsx` — Renders video/pdf/live/download placeholders and handles "Mark Complete".
+  - `app/(student)/learn/[courseSlug]/page.tsx` — Course overview in player.
+  - `app/(student)/learn/[courseSlug]/[lessonId]/page.tsx` — Individual lesson view with Prev/Next navigation.
+  - TypeScript clean, browser-verified including mobile responsive behavior.
+- **Phase 6 — Quiz/Exam UI (Frontend Only)** ✅
+  - `lib/api.ts` — Added `MOCK_QUIZZES` (2 quizzes with MCQ, short_answer, and essay questions), `MOCK_CORRECT_ANSWERS` (private server-side lookup, never in QuizForStudent), `MOCK_ATTEMPTS`. Added `getQuizById`, `getQuizzesByCourseId`, `submitQuizAttempt` (simulates server-side auto-grading for MCQ), `getAttemptResult`.
+  - `components/QuizTimer.tsx` — Cosmetic countdown client component. Contains explicit comment block stating Phase 12 adds server authority. Warning/error colour ramp per Design.md exam UI guidance (muted until final 5 min).
+  - `components/QuestionRenderer.tsx` — Polymorphic question input. MCQ renders radio button group; short_answer renders input; essay renders textarea. Receives `QuizForStudent` question only (no `correctOptionIndex`).
+  - `app/(student)/exam/[quizId]/start/page.tsx` — Quiz start page with metadata, question breakdown, and Begin Quiz CTA. Server component, params awaited.
+  - `app/(student)/exam/[quizId]/attempt/page.tsx` — Active quiz UI. Client component fetching `QuizForStudent`, rendering all `QuestionRenderer`s + `QuizTimer`, and calling `submitQuizAttempt` on submit. Redirects to result page on success.
+  - `app/(student)/exam/[quizId]/result/[attemptId]/page.tsx` — Result page showing pass/fail, MCQ auto-score, pending manual review notice, and submitted answers summary. Does NOT reveal correct MCQ answers. Server component.
+  - `app/(student)/learn/[courseSlug]/page.tsx` — Added Quizzes section listing course quizzes with Take Quiz links.
+  - TypeScript clean (`npx tsc --noEmit` zero errors). Full quiz flow browser-verified: start → attempt (all 3 question types) → submit → result.
+- **Phase 7 — Instructor Dashboard (UI Only)** ✅
+  - `lib/api.ts` — Added mock instructor (Sarah Mitchell, i1) + `MOCK_FULL_QUIZZES` canonical full-quiz store (answers included, seeded from Phase 6 quizzes). New functions: `getInstructorProfile`, `getInstructorCourses` (view-model with lesson/quiz counts), `getInstructorCourseById`, `getInstructorQuizzes`, `getQuizForInstructor`, `saveCourseInfo`, `saveLessons` (recomputes lessonCount/totalDurationSeconds), `createCourse`, `saveQuiz` (recomputes maxScore, keeps student-safe MOCK_QUIZZES in sync), `createQuiz`. `submitQuizAttempt` grading now prefers the canonical store (fallback to `MOCK_CORRECT_ANSWERS`). Draft quizzes excluded from student-facing `getQuizById`/`getQuizzesByCourseId`.
+  - `lib/validation.ts` (new) — Shared Zod schemas (courseInfo/lesson/quizInput) used by BOTH client forms and server actions (Rules.md §2 both-sides validation), client-safe module.
+  - `components/StatusBadge.tsx` — Extended with course/quiz variants (draft/published/archived/scheduled/open/closed) — draft/closed muted, published/open success, scheduled info, archived warning. No ad hoc colors.
+  - `components/InstructorSidebar.tsx` — Instructor nav (Overview, My Courses), desktop fixed + mobile bottom tabs, mirroring DashboardSidebar (JS hover handlers since inline styles beat Tailwind hover classes).
+  - `app/(instructor)/layout.tsx` — Instructor shell without public Navbar/Footer.
+  - `app/(instructor)/instructor/page.tsx` — Overview with 4 stat cards (courses, students, quizzes, est. revenue), quick actions, recent courses list.
+  - `app/(instructor)/instructor/courses/page.tsx` — My Courses with status filter tabs (All/Drafts/Published/Archived via searchParams) + New Course form action.
+  - `app/(instructor)/instructor/courses/[id]/edit/page.tsx` — Course editor: `CourseInfoForm` (title/description/category/price in £→pence/status/tags, datalist categories), `LessonEditor` (add/remove/reorder rows, minutes→seconds conversion, free-preview toggle), Quizzes section with per-quiz Build links + Create Quiz action.
+  - `app/(instructor)/instructor/quizzes/[id]/edit/page.tsx` — Quiz builder page (server component fetching FULL Quiz) wrapping `QuizBuilderForm`: metadata + question editor (mcq with correct-answer radios, short_answer, essay), points, live maxScore.
+  - Server actions (co-located, Phase 6 pattern): `createCourseAction` (redirect to editor), `saveCourseInfoAction`/`saveLessonsAction` (Zod re-validate), `createQuizAction` (redirect to builder), `saveQuizAction` (Zod re-validate).
+  - `components/InstructorCourseCard.tsx` — Instructor card (status badge, students/lessons/quizzes, rating, price, Edit) with working shadow-hover via classes (EnrolledCourseCard pattern).
+  - Verified: `npx tsc --noEmit` zero errors, eslint clean on new files, `next build` passes with all 4 instructor routes, all pages browser-verified zero console errors, quiz builder shows correct-answer radios.
 
 ## In Progress
-- Nothing — Phase 4 complete; Phase 5 ready to start
+- Nothing — Phase 7 complete; Phase 8 ready to start
 
 ## Decisions Made That Aren't in the Other Docs Yet
 - Confirmed the "Blocked/Waiting On" client questions below do NOT block Phases 1–8 (all frontend UI work) — they only become relevant at their specific later phase (languages → messages/ later, scale → Phase 9 infra, timeline/budget → project mgmt only, integrations → whenever specific integration is built, admin permission granularity → Phase 13). Safe to proceed through all frontend phases without these answers.
@@ -70,24 +109,42 @@ Phase 5 — Student Dashboard (Frontend Only)
 - **Price stored in pence (integer GBP)** to avoid floating-point issues. Display layer converts (e.g. `£` + `(pricePence / 100).toFixed(2)`).
 - **`QuizForStudent` type** strips `correctOptionIndex` from Question — this is the type to ALWAYS use when sending quiz data to clients. The full `Quiz` type with answers is server-only.
 - **i18n approach**: `next-intl` is installed but not yet wired up (middleware, routing). Will be configured when needed. For Phases 2–8 (UI work), use plain English strings directly in components — swap to `useTranslations()` when wiring i18n properly.
+- **Phase 5 Auth/Access**: `/dashboard` and `/learn/*` routes have no real access control yet; they are reachable directly with a hardcoded mock user for UI building. Real middleware comes in Phase 9.
+- **EnrolledCourse Type**: Defined in `lib/api.ts` rather than `types/` as it's a view-model joining enrollment and course data for display, not a core data type.
+- **StatusBadge Colors**: Reuses `--color-warning` for both `pending` and `refunded` states. No ad hoc colors were added outside the `Design.md` token system.
+- **Server Components & Styling**: Resolved a Phase 5 Next.js error by substituting JS event handlers (`onMouseEnter`/`onMouseLeave` in `EnrolledCourseCard` and `dashboard/page.tsx`) with pure Tailwind CSS `hover:` modifiers, establishing a convention to keep UI cards as Server Components.
+- **QuizForStudent type enforcement**: `MOCK_QUIZZES` is typed as `QuizForStudent[]` — TypeScript enforces that `correctOptionIndex` cannot appear in any question. Correct answers live solely in `MOCK_CORRECT_ANSWERS`, a private constant inside `lib/api.ts`. The `submitQuizAttempt` function performs grading inside the mock API (server simulation); the component only submits raw `SubmittedAnswer` objects and receives a scored `Attempt` back.
+- **QuizTimer cosmetic-only (Phase 6)**: Timer is client-side countdown only. Phase 12 will add server-side window enforcement (`startedAt + durationMinutes` checked server-side, force-submission on expiry).
+- **MCQ correct answers not revealed on result page**: The result page shows submitted answers but not correct ones. A review API (comparing submission to correct answers) is deferred to Phase 12.
+- **Attempt page as Client Component**: Attempt page is `'use client'` because it needs `useEffect`/`useState` for answer tracking and the `QuizTimer`. Start and result pages remain Server Components.
+- **Mock Quiz Submission Fix (Bug 1)**: The attempt page uses a Server Action (`submitAttemptAction`) to submit answers. This ensures the in-memory `MOCK_ATTEMPTS` array is updated on the server side so the subsequent Server Component result page can find the newly created attempt.
+- **QuizTimer Refresh Persistence (Bug 2)**: Added `sessionStorage` to `QuizTimer` to persist the start time across browser refreshes. This is a temporary client-side mechanism; real server-enforced timing will replace this in Phase 12.
+- **Phase 7 mock instructor**: The instructor dashboard uses a hardcoded mock instructor (Sarah Mitchell, id i1) matching existing mock course instructorIds — `getInstructorProfile()` mirrors `getCurrentUser()`. Real RBAC comes in Phase 9.
+- **Quiz builder handles the FULL Quiz type (correct answers included)**: `getInstructorQuizzes`/`getQuizForInstructor`/`saveQuiz`/`createQuiz` are server-only — only imported by server components and server actions. The instructor is the authorised quiz owner (they set the answers); students still receive only `QuizForStudent` via the Phase 6 functions. Comment blocks in lib/api.ts warn against importing these into client components.
+- **Canonical full-quiz store (`MOCK_FULL_QUIZZES`)**: Seeded from Phase 6 student-safe quizzes (answers re-joined from `MOCK_CORRECT_ANSWERS`). `saveQuiz`/`createQuiz` keep the student-safe `MOCK_QUIZZES` array in sync (answers stripped), and `submitQuizAttempt` grading prefers the canonical store so instructor-edited answers grade correctly.
+- **Draft quizzes are never student-visible**: `getQuizById`/`getQuizzesByCourseId` filter out `status === 'draft'` — a quiz stays hidden from students until the instructor opens/schedules/publishes it.
+- **Shared Zod schemas in `lib/validation.ts`**: Course/lesson/quiz editor schemas live in a new client-safe module imported by both client form components (inline field errors) and server actions (re-validation before persisting). Satisfies Rules.md §2 without schema duplication.
+- **Instructor editors are Server Components + client forms + server actions**: same pattern as Phase 6 attempt submit. Pages fetch via server-only API functions; forms persist via co-located server actions, then `router.refresh()` re-fetches server data.
+- **Slug regenerated from title on save**: mock behavior — renaming a published course changes its public/enrolled URLs. Acceptable for mock; Phase 10 real API will decouple slug from title.
+- **Durations entered in minutes in editors, stored in seconds**: `LessonEditor` and `QuizBuilderForm` take minute inputs and convert to the canonical seconds/minutes units on submit.
+- **InstructorSidebar hover uses JS handlers**: inline `backgroundColor` styles beat Tailwind hover classes, so the sidebar mirrors DashboardSidebar's `onMouseEnter`/`onMouseLeave` approach (it's a client component anyway). Card hover shadows use class-only styling (EnrolledCourseCard pattern) where inline shadows would block them.
 
 ## Known Issues / Tech Debt
 - 3 high severity npm vulnerabilities present since Phase 0 scaffold — intentionally unaddressed until Phase 14, not forgotten.
 - `next-intl` is installed but not configured (middleware/routing). i18n wiring deferred; components use plain strings for now.
 - CourseCard thumbnails use coloured placeholder divs with category initials — real thumbnails will come via Cloudflare R2/S3 in Phase 10.
-- Course detail `getWhatYouLearnPoints()` returns generic per-category outcomes — real `whatYouLearn[]` field should be added to the `Course` type and mock data when an instructor course editor is built (Phase 7).
+- Course detail `getWhatYouLearnPoints()` returns generic per-category outcomes — real `whatYouLearn[]` field should be added to the `Course` type and mock data. (Still pending — the Phase 7 course editor edits existing fields only; a `whatYouLearn[]` editor is a natural Phase 7.5/8 addition.)
+- **Server-only quiz data still co-located in `lib/api.ts`**: the client attempt page imports `getQuizById` from lib/api.ts, which bundles the whole module (now including `MOCK_FULL_QUIZZES` with correct answers) into the client graph in dev. Pre-existing since Phase 6 (`MOCK_CORRECT_ANSWERS` had the same issue); Phase 7 amplified it. Phase 9 restructure should split server-only quiz data + grading into a separate server-only module.
 
 ## Blocked / Waiting On
 - Client answers still pending (not currently blocking any active phase): number of languages needed, exact scale/growth targets, timeline and budget, existing system integrations, admin role permission granularity (see PRD.md / original metadata doc)
 
 ## Next Steps
-- Start Phase 5 — Student Dashboard (Frontend Only):
-  1. Create `app/(student)/` route group with its own layout (no public Navbar/Footer — separate dashboard shell with sidebar).
-  2. Build sidebar nav component: links to Dashboard, My Courses, Certificates, Payments, Settings.
-  3. Build `app/(student)/dashboard/page.tsx` — enrolled courses grid (using mock enrollments), progress bars.
-  4. Build `app/(student)/dashboard/settings/page.tsx` — name/email edit form (Zod), password change section.
-  5. Add mock enrollment data + getEnrollments() to lib/api.ts.
-  6. Done when: student can see their enrolled courses with progress, navigate sidebar, and view settings.
+- Start Phase 8 — Admin Dashboard (UI Only):
+  1. Create `app/(admin)/` route group with its own layout (separate from instructor/student/public).
+  2. Build Admin overview page with charts (Recharts is already in the approved dependency list but NOT yet installed — ask before adding it).
+  3. Build course/user/payment management tables (DataTable component pattern), audit log (read-only), and settings page (branding placeholder).
+  4. Done when: admin can view and interact with all mock data tables.
 
 ---
 
@@ -101,6 +158,27 @@ Phase 5 — Student Dashboard (Frontend Only)
 **Decisions made:** 
 **Next step:** 
 ```
+
+## Session — Aug 5, 2026 (Phase 7)
+**Phase:** Phase 7 complete, Phase 8 ready
+**Completed this session:** Instructor Dashboard (UI Only). Added mock instructor (Sarah Mitchell, i1) + canonical full-quiz store (MOCK_FULL_QUIZZES) + 10 new API functions to lib/api.ts; created lib/validation.ts (shared Zod schemas), InstructorSidebar, InstructorCourseCard, CourseInfoForm, LessonEditor, QuizBuilderForm, and the (instructor) route group: layout, overview, course list with status tabs + New Course action, course editor (details + curriculum + quizzes section), quiz builder with correct-answer radios. Draft quizzes hidden from students; grading prefers the canonical store. TypeScript clean, eslint clean, next build passes, all pages browser-verified with zero console errors.
+**Files touched:** lib/api.ts, lib/validation.ts, components/StatusBadge.tsx, components/InstructorSidebar.tsx, components/InstructorCourseCard.tsx, components/CourseInfoForm.tsx, components/LessonEditor.tsx, components/QuizBuilderForm.tsx, app/(instructor)/layout.tsx, app/(instructor)/instructor/page.tsx, app/(instructor)/instructor/courses/page.tsx, app/(instructor)/instructor/courses/actions.ts, app/(instructor)/instructor/courses/[id]/edit/page.tsx, app/(instructor)/instructor/courses/[id]/edit/actions.ts, app/(instructor)/instructor/quizzes/[id]/edit/page.tsx, app/(instructor)/instructor/quizzes/[id]/edit/actions.ts, docs/Memory.md
+**Decisions made:** Quiz builder is a server-only surface handling the FULL Quiz type — instructors are authorised owners of answers; students keep getting QuizForStudent only. Server actions + shared Zod schemas for both-sides validation. Mock instructor reuses existing i1 course ownership. Durations entered in minutes, stored in seconds. Slug regenerated from title (mock). Draft quizzes never student-visible.
+**Next step:** Begin Phase 8 — Admin Dashboard (UI Only).
+
+## Session — Aug 3, 2026 (Phase 6)
+**Phase:** Phase 6 complete, Phase 7 ready
+**Completed this session:** Quiz/Exam UI (Frontend Only). Added mock quiz data (QuizForStudent typed — no correctOptionIndex), private MOCK_CORRECT_ANSWERS map, and submitQuizAttempt auto-grading simulation to lib/api.ts. Built QuizTimer (cosmetic, Phase 12 comment included), QuestionRenderer (mcq/short_answer/essay). Built quiz start, attempt, and result pages. Linked quizzes into course overview page. TypeScript clean.
+**Files touched:** lib/api.ts, components/QuizTimer.tsx, components/QuestionRenderer.tsx, app/(student)/exam/[quizId]/start/page.tsx, app/(student)/exam/[quizId]/attempt/page.tsx, app/(student)/exam/[quizId]/result/[attemptId]/page.tsx, app/(student)/learn/[courseSlug]/page.tsx
+**Decisions made:** QuizForStudent enforced by TypeScript — correct answers never reach the client. Grading simulated server-side in submitQuizAttempt. Timer is cosmetic only. Result page withholds correct answers (Phase 12 review API). Attempt page is a Client Component; start/result are Server Components.
+**Next step:** Begin Phase 7 — Instructor Dashboard (UI Only).
+
+## Session — Aug 3, 2026 (Phase 5)
+**Phase:** Phase 5 complete, Phase 6 ready
+**Completed this session:** Student Dashboard & Course Player (Frontend Only). Added mock data and API methods to `lib/api.ts`. Built student layout with `DashboardSidebar`. Created 5 dashboard pages: overview, My Courses, Certificates, Payments, Settings. Built Course Player with `CourseSidebar`, `LessonPlayer` branching by content type, and course overview page. Verified mobile responsiveness and TypeScript.
+**Files touched:** lib/api.ts, app/(student)/*, components/DashboardSidebar.tsx, components/EnrolledCourseCard.tsx, components/ProgressBar.tsx, components/SettingsPasswordForm.tsx, components/SettingsProfileForm.tsx, components/StatusBadge.tsx, components/CourseSidebar.tsx, components/LessonPlayer.tsx
+**Decisions made:** `/dashboard` and `/learn/*` routes have no access control yet; `EnrolledCourse` type placed in `api.ts` as a view-model; `StatusBadge` reuses `--color-warning` for pending/refunded to strictly follow Design.md tokens.
+**Next step:** Begin Phase 6 — Quiz/Exam UI.
 
 ## Session — Aug 1, 2026 (Phase 4)
 **Phase:** Phase 4 complete, Phase 5 ready

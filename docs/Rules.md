@@ -56,6 +56,7 @@
 - File naming: PascalCase for components, camelCase for functions/utilities
 - One component per file, matching filename
 - Comments only where logic isn't self-explanatory — don't over-comment obvious code
+- **Server Component Defaults:** Use Tailwind's `hover:`, `focus:`, and `active:` modifiers for visual interaction states instead of JS event handlers (`onMouseEnter`/`onMouseLeave`/`onClick` for styling only). This avoids unnecessary `'use client'` directives and keeps components as Server Components by default.
 
 ## 6. When the AI Is Unsure
 If a request is ambiguous, contradicts an existing document, or requires a decision not yet made (e.g., "should refunds be automatic or manual approval?") — the AI should ask a direct clarifying question rather than assume and build the wrong thing. Getting this wrong costs more tokens and time than asking upfront.

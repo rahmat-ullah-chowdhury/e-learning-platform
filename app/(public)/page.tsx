@@ -11,6 +11,10 @@ export const metadata: Metadata = {
     'Free and paid courses from expert instructors. Browse, enrol, and learn at your own pace.',
 };
 
+// Mock phase: re-query the shared mock source on every visit so newly
+// published courses appear immediately instead of a static snapshot.
+export const dynamic = 'force-dynamic';
+
 export default async function HomePage() {
   const [featuredCourses, categories] = await Promise.all([
     getFeaturedCourses(),
